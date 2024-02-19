@@ -1,8 +1,10 @@
-package com.paci.training.android.truongnv92.mockproject;
+package com.paci.training.android.truongnv92.mockproject.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.paci.training.android.truongnv92.mockproject.R;
 
 public class MainActivity extends AppCompatActivity {
 
