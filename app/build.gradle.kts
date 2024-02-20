@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.paci.training.android.truongnv92.mockproject"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.paci.training.android.truongnv92.mockproject"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -24,6 +24,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        aidl = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
