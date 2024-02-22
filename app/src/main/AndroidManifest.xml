@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Khai báo provider mới -->
+        <provider
+            android:name=".provider.CheckBoxedItemContentProvider"
+            android:authorities="com.paci.training.android.truongnv92.mockprojectprovider"
+            android:exported="true" />
     </application>
 
 </manifest>
