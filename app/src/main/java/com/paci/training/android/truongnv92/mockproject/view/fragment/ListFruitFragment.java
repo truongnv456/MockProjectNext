@@ -2,6 +2,8 @@ package com.paci.training.android.truongnv92.mockproject.view.fragment;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/*public class ListFruitFragment extends Fragment implements FruitAdapter.OnCheckedChangeListener {
+public class ListFruitFragment extends Fragment implements FruitAdapter.OnCheckedChangeListener {
     private static final String AUTHORITY = "com.paci.training.android.truongnv92.mockprojectprovider";
     private static final String TABLE_NAME = "check_boxed_items";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
@@ -58,8 +60,8 @@ import java.util.concurrent.Executors;
         FruitRepository fruitRepository = new FruitRepository();
         fruitViewModel = new FruitViewModel(fruitRepository);
 
-        fruitList = fruitViewModel.loadFruits();
-        fruitAdapter = new FruitAdapter(requireActivity(), fruitList, fruitViewModel);
+        fruitAdapter = new FruitAdapter(requireActivity(),
+                fruitViewModel.updateDataFollowInteracting(getContext().getContentResolver()));
         recyclerView.setAdapter(fruitAdapter);
         fruitAdapter.setOnCheckedChangeListener(this);
 
@@ -68,6 +70,8 @@ import java.util.concurrent.Executors;
             public void onItemClick(int position, Fruit fruit) {
                 imageView.setImageResource(fruit.getSrc());
                 fruitViewModel.setCurrentSelectedFruit(fruit);
+                fruitViewModel.updateCheckBoxedItemFruitValid(1, fruitViewModel.getCurrentSelectedFruit().getId()
+                        , getContext().getContentResolver());
             }
         });
 
@@ -89,9 +93,8 @@ import java.util.concurrent.Executors;
 
     @Override
     public void onCheckedChanged(int position, boolean isChecked) {
-        Fruit item = fruitList.get(position);
+        Fruit item = fruitViewModel.getRawFruits().get(position);
         item.setChecked(isChecked);
-        fruitViewModel.updateCheckBoxedItemFruitValid(isChecked ? 1 : 0, item.getId(), requireActivity().getContentResolver());
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -101,7 +104,8 @@ import java.util.concurrent.Executors;
                 .addToBackStack(null)
                 .commit();
     }
-}*/
+}
+/*
 public class ListFruitFragment extends Fragment {
 
     private ImageView imageView;
@@ -126,7 +130,8 @@ public class ListFruitFragment extends Fragment {
         FruitRepository fruitRepository = new FruitRepository();
         fruitViewModel = new FruitViewModel(fruitRepository);
 
-        fruitAdapter = new FruitAdapter(requireActivity(), fruitViewModel.updateDataFollowInteracting(getContext().getContentResolver()));
+        fruitAdapter = new FruitAdapter(requireActivity()
+                , fruitViewModel.updateDataFollowInteracting(getContext().getContentResolver()));
         recyclerView.setAdapter(fruitAdapter);
 
         fruitAdapter.setOnItemClickListener(new FruitAdapter.OnItemClickListener() {
@@ -161,4 +166,4 @@ public class ListFruitFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-}
+}*/

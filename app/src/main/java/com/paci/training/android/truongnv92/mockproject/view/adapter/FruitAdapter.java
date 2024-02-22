@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.paci.training.android.truongnv92.mockproject.R;
 import com.paci.training.android.truongnv92.mockproject.model.Fruit;
 import com.paci.training.android.truongnv92.mockproject.provider.CheckBoxedItemContentProvider;
-import com.paci.training.android.truongnv92.mockproject.viewmodel.FruitViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +48,6 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.FruitViewHol
 
     public FruitAdapter(Context context, List<Fruit> fruitList) {
         this.context = context;
-        this.fruitList.clear();
-        this.contentProvider = new CheckBoxedItemContentProvider();
         this.fruitList.addAll(fruitList);
     }
 

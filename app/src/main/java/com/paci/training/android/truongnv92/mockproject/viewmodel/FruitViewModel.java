@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -130,8 +131,10 @@ public class FruitViewModel extends ViewModel {
                 if (fruit.getId() == i + 1) {
                     if (itemValids.get(i) == 1) {
                         fruit.setChecked(true);
+                        Log.d("isChecked",""+ fruit.isChecked());
                     } else {
                         fruit.setChecked(false);
+                        Log.d("isChecked",""+ fruit.isChecked());
                     }
                 }
             }
@@ -149,5 +152,7 @@ public class FruitViewModel extends ViewModel {
         // Update trạng thái của checkbox item trong ContentProvider
         contentResolver.update(uri, values, null, null);
     }
+
+
 }
 
