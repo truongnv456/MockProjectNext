@@ -126,8 +126,7 @@ public class ListFruitFragment extends Fragment {
         FruitRepository fruitRepository = new FruitRepository();
         fruitViewModel = new FruitViewModel(fruitRepository);
 
-        List<Fruit> fruitList = fruitViewModel.loadFruits();
-        fruitAdapter = new FruitAdapter(requireActivity(), fruitList);
+        fruitAdapter = new FruitAdapter(requireActivity(), fruitViewModel.updateDataFollowInteracting(getContext().getContentResolver()));
         recyclerView.setAdapter(fruitAdapter);
 
         fruitAdapter.setOnItemClickListener(new FruitAdapter.OnItemClickListener() {
@@ -135,6 +134,7 @@ public class ListFruitFragment extends Fragment {
             public void onItemClick(int position, Fruit fruit) {
                 imageView.setImageResource(fruit.getSrc());
                 fruitViewModel.setCurrentSelectedFruit(fruit);
+
             }
         });
 
