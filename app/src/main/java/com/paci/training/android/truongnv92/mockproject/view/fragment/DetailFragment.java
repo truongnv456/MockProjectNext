@@ -79,6 +79,7 @@ public class DetailFragment extends Fragment {
         // Kết nối với service AIDL khi Fragment được tạo
         getActivity().bindService(intent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
         Button btnBack = view.findViewById(R.id.btn_back);
+
         tvFruitName = view.findViewById(R.id.fruit_name);
         tvFruitDetail = view.findViewById(R.id.fruit_detail);
 
@@ -100,18 +101,13 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
             // Replace ListFruitsFragment with DetailFragment
+                if (selectedFruit != null) {
+                    fruitViewModel.setCurrentSelectedFruit(selectedFruit);
+                }
+                Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+" ");
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
         return view;
-    }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Lưu trạng thái của fruit được chọn vào FruitViewModel
-        if (selectedFruit != null) {
-            fruitViewModel.setCurrentSelectedFruit(selectedFruit);
-        }
     }
 }

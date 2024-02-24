@@ -60,7 +60,8 @@ public class ListFruitFragment extends Fragment {
             public void onItemClick(int position, Fruit fruit) {
                 imageView.setImageResource(fruit.getSrc());
                 fruitViewModel.setCurrentSelectedFruit(fruit); // Lưu trạng thái của mục fruit được chọn
-                fruitAdapter.notifyDataSetChanged(); // Cập nhật lại adapter
+                imageView.setImageResource(fruit.getSrc()); // Hiển thị ảnh của fruit item cuối cùng
+                Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+"");
             }
         });
 
@@ -69,6 +70,8 @@ public class ListFruitFragment extends Fragment {
             public void onClick(View v) {
                 Fruit lastSelectedFruit = fruitViewModel.getCurrentSelectedFruit();
                 if (lastSelectedFruit != null) {
+                    fruitViewModel.setCurrentSelectedFruit(lastSelectedFruit); // Cập nhật lastSelectedFruit trước khi chuyển sang DetailFragment
+
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("selectedFruit", lastSelectedFruit);
                     DetailFragment detailFragment = new DetailFragment();
