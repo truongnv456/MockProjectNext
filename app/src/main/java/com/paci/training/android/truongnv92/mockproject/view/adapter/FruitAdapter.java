@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.paci.training.android.truongnv92.mockproject.R;
@@ -69,11 +71,20 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.FruitViewHol
 
         holder.checkBoxItem.setOnCheckedChangeListener(null); // Remove listener to avoid triggering listener during initialization
         holder.checkBoxItem.setChecked(item.isChecked());
+        Log.e("isCheck",item.isChecked()+"");
 
         holder.checkBoxItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // Lưu trạng thái mới vào danh sách fruits khi checkbox thay đổi
             item.setChecked(isChecked);
             holder.checkBoxTextView.setEnabled(isChecked);
+
+            // Highlight item nếu được chọn
+            if (isChecked) {
+                holder.itemView.setBackgroundColor(Color.GREEN);
+            } else {
+                // Khôi phục màu nền ban đầu nếu không được chọn
+                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            }
 
             // Thực hiện cập nhật fruitValid dựa trên isChecked trên một luồng nền
             executor.execute(() -> {
@@ -91,6 +102,15 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.FruitViewHol
                 listener.onItemClick(position, item);
             }
         });
+
+        // Thêm logic để highlight item dựa trên trạng thái của isChecked
+        if (item.isChecked()) {
+            // Thực hiện highlight item ở đây, ví dụ:
+            holder.itemView.setBackgroundColor(Color.GREEN);
+        } else {
+            // Đảm bảo rằng mọi item không được chọn sẽ không được highlight, ví dụ:
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     @Override

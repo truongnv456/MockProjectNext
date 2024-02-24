@@ -46,7 +46,7 @@ public class CheckBoxedItemContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Log.d("TAG", "query");
+        Log.d("checkcpTAG", "query");
         Cursor cursor;
         switch (uriMatcher.match(uri)){
             case URI_ALL_ITEMS_CODE:
