@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import com.paci.training.android.truongnv92.mockproject.model.Fruit;
 import com.paci.training.android.truongnv92.mockproject.model.repository.FruitRepository;
 import com.paci.training.android.truongnv92.mockproject.view.adapter.FruitAdapter;
 import com.paci.training.android.truongnv92.mockproject.viewmodel.FruitViewModel;
+import com.paci.training.android.truongnv92.mockproject.viewmodel.ViewModelFactory;
 
 public class ListFruitFragment extends Fragment {
 
@@ -47,8 +49,10 @@ public class ListFruitFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rcv_list_fruit);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
+        // Khởi tạo FruitViewModel
         FruitRepository fruitRepository = new FruitRepository();
-        fruitViewModel = new FruitViewModel(fruitRepository);
+        ViewModelFactory factory = new ViewModelFactory(fruitRepository);
+        fruitViewModel = new ViewModelProvider(requireActivity(), factory).get(FruitViewModel.class);
 
         fruitAdapter = new FruitAdapter(requireActivity()
                 , fruitViewModel.updateDataFollowInteracting(getContext().getContentResolver())
@@ -89,7 +93,7 @@ public class ListFruitFragment extends Fragment {
             @Override
             public void onItemClick(int position, Fruit fruit) {
                 fruitViewModel.setCurrentSelectedFruit(fruit); // Lưu trạng thái của mục fruit được chọn
-                imageView.setImageResource(fruitViewModel.getCurrentSelectedFruit().getSrc()); // Hiển thị ảnh của fruit item cuối cùng
+                imageView.setImageResource(fruit.getSrc()); // Hiển thị ảnh của fruit item cuối cùng
                 Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+"");
             }
         });

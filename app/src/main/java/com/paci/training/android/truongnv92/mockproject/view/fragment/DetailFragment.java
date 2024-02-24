@@ -2,11 +2,8 @@ package com.paci.training.android.truongnv92.mockproject.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,10 +24,8 @@ import com.paci.training.android.truongnv92.mockproject.R;
 import com.paci.training.android.truongnv92.mockproject.model.Fruit;
 import com.paci.training.android.truongnv92.mockproject.model.repository.FruitRepository;
 import com.paci.training.android.truongnv92.mockproject.viewmodel.FruitViewModel;
+import com.paci.training.android.truongnv92.mockproject.viewmodel.ViewModelFactory;
 import com.paci.training.android.truongnv92.mockprojectserver.IMyAidlInterface;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class DetailFragment extends Fragment {
     private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
@@ -81,7 +76,6 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        btnTest = view.findViewById(R.id.btn_test);
         btnBack = view.findViewById(R.id.btn_back);
 
         tvFruitName = view.findViewById(R.id.fruit_name);
@@ -99,7 +93,8 @@ public class DetailFragment extends Fragment {
         getActivity().bindService(intent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
         // Khởi tạo FruitViewModel
         FruitRepository fruitRepository = new FruitRepository();
-        fruitViewModel = new FruitViewModel(fruitRepository);
+        ViewModelFactory factory = new ViewModelFactory(fruitRepository);
+        fruitViewModel = new ViewModelProvider(requireActivity(), factory).get(FruitViewModel.class);
 
         // Lấy dữ liệu fruit được chọn từ Bundle
         Bundle bundle = getArguments();
