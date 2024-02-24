@@ -28,8 +28,6 @@ import com.paci.training.android.truongnv92.mockproject.viewmodel.ViewModelFacto
 import com.paci.training.android.truongnv92.mockprojectserver.IMyAidlInterface;
 
 public class DetailFragment extends Fragment {
-    private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
-
     Button btnTest;
     private Fruit selectedFruit;
     private TextView tvFruitDetail;

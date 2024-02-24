@@ -141,16 +141,5 @@ public class FruitViewModel extends ViewModel {
         }
         return rawFruits;
     }
-
-    public void updateCheckBoxedItemFruitValid(int fruitValid, int fruitId, ContentResolver contentResolver) {
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_FRUIT_VALID, fruitValid);
-
-        // Xây dựng URI với ID của trái cây
-        Uri uri = Uri.withAppendedPath(CONTENT_URI, String.valueOf(fruitId));
-
-        // Update trạng thái của checkbox item trong ContentProvider
-        contentResolver.update(uri, values, null, null);
-    }
 }
 
