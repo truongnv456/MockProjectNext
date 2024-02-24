@@ -55,20 +55,24 @@ public class ListFruitFragment extends Fragment {
                 , getContext().getContentResolver());
         recyclerView.setAdapter(fruitAdapter);
 
-        fruitAdapter.setOnItemClickListener(new FruitAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, Fruit fruit) {
-                imageView.setImageResource(fruit.getSrc());
-                fruitViewModel.setCurrentSelectedFruit(fruit); // Lưu trạng thái của mục fruit được chọn
-                imageView.setImageResource(fruit.getSrc()); // Hiển thị ảnh của fruit item cuối cùng
-                Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+"");
-            }
-        });
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Kiểm tra xem FruitViewModel có chứa dữ liệu của fruit item cuối cùng hay không
+        Fruit lastSelectedFruit = fruitViewModel.getCurrentSelectedFruit();
+        if (lastSelectedFruit != null) {
+            imageView.setImageResource(lastSelectedFruit.getSrc()); // Hiển thị ảnh của fruit item cuối cùng
+            Log.e("ImageView", "" + lastSelectedFruit.getSrc());
+        }
 
         btnDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fruit lastSelectedFruit = fruitViewModel.getCurrentSelectedFruit();
+                Log.d("LastSelectedFruit",lastSelectedFruit.getName());
                 if (lastSelectedFruit != null) {
                     fruitViewModel.setCurrentSelectedFruit(lastSelectedFruit); // Cập nhật lastSelectedFruit trước khi chuyển sang DetailFragment
 
@@ -80,17 +84,25 @@ public class ListFruitFragment extends Fragment {
                 }
             }
         });
-        return view;
+
+        fruitAdapter.setOnItemClickListener(new FruitAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, Fruit fruit) {
+                fruitViewModel.setCurrentSelectedFruit(fruit); // Lưu trạng thái của mục fruit được chọn
+                imageView.setImageResource(fruitViewModel.getCurrentSelectedFruit().getSrc()); // Hiển thị ảnh của fruit item cuối cùng
+                Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+"");
+            }
+        });
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
         // Kiểm tra xem FruitViewModel có chứa dữ liệu của fruit item cuối cùng hay không
         Fruit lastSelectedFruit = fruitViewModel.getCurrentSelectedFruit();
         if (lastSelectedFruit != null) {
             imageView.setImageResource(lastSelectedFruit.getSrc()); // Hiển thị ảnh của fruit item cuối cùng
-            Log.e("ImageView",""+lastSelectedFruit.getSrc());
+            Log.e("ImageView", "" + lastSelectedFruit.getSrc());
         }
     }
 
@@ -100,15 +112,5 @@ public class ListFruitFragment extends Fragment {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Lấy trạng thái của mục trái cây hiện tại từ FruitViewModel và lưu vào Bundle
-        Fruit lastSelectedFruit = fruitViewModel.getCurrentSelectedFruit();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("lastSelectedFruit", lastSelectedFruit);
-        getParentFragmentManager().setFragmentResult("lastSelectedFruit", bundle);
     }
 }

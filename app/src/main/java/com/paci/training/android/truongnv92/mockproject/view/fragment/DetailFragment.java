@@ -1,4 +1,5 @@
 package com.paci.training.android.truongnv92.mockproject.view.fragment;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -7,6 +8,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.paci.training.android.truongnv92.mockproject.R;
 import com.paci.training.android.truongnv92.mockproject.model.Fruit;
 import com.paci.training.android.truongnv92.mockproject.model.repository.FruitRepository;
@@ -36,10 +39,13 @@ public class DetailFragment extends Fragment {
     private Fruit selectedFruit;
     private TextView tvFruitDetail;
     private TextView tvFruitName;
+    private Button btnBack;
     private FruitViewModel fruitViewModel;
+
 
     public DetailFragment() {
     }
+
     // service
     IMyAidlInterface iMyAidlInterface;
     private final String TAG = "CheckService";
@@ -60,6 +66,7 @@ public class DetailFragment extends Fragment {
             }
             Log.e(TAG, "Remote config Service Connected!!!");
         }
+
         // Được gọi khi kết nối với dịch vụ bị ngắt kết nối một cách không mong muốn.
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -67,6 +74,7 @@ public class DetailFragment extends Fragment {
             iMyAidlInterface = null;
         }
     };
+
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,15 +82,21 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         btnTest = view.findViewById(R.id.btn_test);
-        Intent intent = new Intent("AIDLFruitService");
-        intent.setPackage("com.paci.training.android.truongnv92.mockprojectserver");
-        // Kết nối với service AIDL khi Fragment được tạo
-        getActivity().bindService(intent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
-        Button btnBack = view.findViewById(R.id.btn_back);
+        btnBack = view.findViewById(R.id.btn_back);
 
         tvFruitName = view.findViewById(R.id.fruit_name);
         tvFruitDetail = view.findViewById(R.id.fruit_detail);
 
+       return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Intent intent = new Intent("AIDLFruitService");
+        intent.setPackage("com.paci.training.android.truongnv92.mockprojectserver");
+        // Kết nối với service AIDL khi Fragment được tạo
+        getActivity().bindService(intent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
         // Khởi tạo FruitViewModel
         FruitRepository fruitRepository = new FruitRepository();
         fruitViewModel = new FruitViewModel(fruitRepository);
@@ -91,6 +105,7 @@ public class DetailFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             selectedFruit = (Fruit) bundle.getSerializable("selectedFruit");
+            Log.d("SelectedFruit", selectedFruit.getName());
         }
 
         // Hiển thị thông tin của fruit được chọn
@@ -100,14 +115,13 @@ public class DetailFragment extends Fragment {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            // Replace ListFruitsFragment with DetailFragment
+                // Replace ListFruitsFragment with DetailFragment
                 if (selectedFruit != null) {
                     fruitViewModel.setCurrentSelectedFruit(selectedFruit);
                 }
-                Log.d("TAG",fruitViewModel.getCurrentSelectedFruit().getSrc()+" ");
+                Log.d("TAG", fruitViewModel.getCurrentSelectedFruit().getName() + " ");
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
-        return view;
     }
 }
