@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 
 
 public class FruitViewModel extends ViewModel {
-    private static final String AUTHORITY = "com.paci.training.android.truongnv92.mockprojectprovider";
+    private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
     private static final String TABLE_NAME = "check_boxed_items";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     public static final String COLUMN_FRUIT_ID = "fruit_id";
@@ -88,7 +88,7 @@ public class FruitViewModel extends ViewModel {
             @Override
             public String call() throws Exception {
                 List<Integer> fruitValids = new ArrayList<>();
-                Uri uri = Uri.parse("content://com.paci.training.android.truongnv92.mockprojectprovider/check_boxed_items");
+                Uri uri = Uri.parse("content://com.paci.training.android.truongnv92.provider.mockprojectprovider/check_boxed_items");
                 String[] projection = {"fruit_id", "fruit_valid"};
                 Cursor cursor = contentResolver.query(uri, projection, null, null, null);
                 if (cursor != null) {
@@ -152,7 +152,5 @@ public class FruitViewModel extends ViewModel {
         // Update trạng thái của checkbox item trong ContentProvider
         contentResolver.update(uri, values, null, null);
     }
-
-
 }
 

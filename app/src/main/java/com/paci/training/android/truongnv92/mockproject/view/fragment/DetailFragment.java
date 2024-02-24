@@ -10,6 +10,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -20,22 +22,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.paci.training.android.truongnv92.mockproject.R;
 import com.paci.training.android.truongnv92.mockproject.model.Fruit;
+import com.paci.training.android.truongnv92.mockproject.model.repository.FruitRepository;
+import com.paci.training.android.truongnv92.mockproject.viewmodel.FruitViewModel;
 import com.paci.training.android.truongnv92.mockprojectserver.IMyAidlInterface;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class DetailFragment extends Fragment {
-    private static final String AUTHORITY = "com.paci.training.android.truongnv92.mockprojectprovider";
-    private static final String PATH_ITEMS = "check_boxed_items";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH_ITEMS);
-    public static final String COLUMN_FRUIT_ID = "fruit_id";
-    public static final String COLUMN_FRUIT_VALID = "fruit_valid";
-    private static final Executor executor = Executors.newSingleThreadExecutor();
+    private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
+
     Button btnTest;
     private Fruit selectedFruit;
     private TextView tvFruitDetail;
     private TextView tvFruitName;
+    private FruitViewModel fruitViewModel;
+
     public DetailFragment() {
     }
     // service
@@ -80,14 +82,19 @@ public class DetailFragment extends Fragment {
         tvFruitName = view.findViewById(R.id.fruit_name);
         tvFruitDetail = view.findViewById(R.id.fruit_detail);
 
-        // Nhận thông tin fruit từ Bundle
+        // Khởi tạo FruitViewModel
+        FruitRepository fruitRepository = new FruitRepository();
+        fruitViewModel = new FruitViewModel(fruitRepository);
+
+        // Lấy dữ liệu fruit được chọn từ Bundle
         Bundle bundle = getArguments();
         if (bundle != null) {
             selectedFruit = (Fruit) bundle.getSerializable("selectedFruit");
-        // Hiển thị thông tin fruit
-            if (selectedFruit != null) {
-                tvFruitName.setText(selectedFruit.getName());
-            }
+        }
+
+        // Hiển thị thông tin của fruit được chọn
+        if (selectedFruit != null) {
+            tvFruitName.setText(selectedFruit.getName());
         }
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,26 +108,10 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            // Trong onCreateView hoặc ở một phương thức khác phù hợp
-                executor.execute(() -> {
-                    ContentResolver contentResolver = requireActivity().getContentResolver();
-                    Uri uri = CONTENT_URI;
-                    String[] projection = {COLUMN_FRUIT_ID, COLUMN_FRUIT_VALID};
-                    Cursor cursor = contentResolver.query(uri, projection, null, null, null);
-                    if (cursor != null) {
-                        while (cursor.moveToNext()) {
-                            int fruitId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FRUIT_ID));
-                            int fruitValid = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FRUIT_VALID));
-                            Log.d("checkcp",fruitId + " " + fruitValid);
-                            // Xử lý dữ liệu, có thể lưu vào danh sách hoặc làm bất kỳ điều gì cần thiết
-                        }
-                        cursor.close();
-                    }
-                });
-            }
-        });
+
+        // Lưu trạng thái của fruit được chọn vào FruitViewModel
+        if (selectedFruit != null) {
+            fruitViewModel.setCurrentSelectedFruit(selectedFruit);
+        }
     }
 }

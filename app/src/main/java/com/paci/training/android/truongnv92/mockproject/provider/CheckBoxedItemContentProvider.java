@@ -14,10 +14,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class CheckBoxedItemContentProvider extends ContentProvider {
-    private static final String AUTHORITY = "com.paci.training.android.truongnv92.mockprojectprovider";
+    private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
     private static final String TABLE_NAME = "check_boxed_items";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-    public static final String COLUMN_FRUIT_ID = "fruit_id";
     public static final String COLUMN_FRUIT_VALID = "fruit_valid";
     //The match code for some items in CheckedItem table
     public static final int URI_ALL_ITEMS_CODE = 1;
@@ -27,11 +25,13 @@ public class CheckBoxedItemContentProvider extends ContentProvider {
     public static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-    // to access whole table
+        // to access whole table
         uriMatcher.addURI(AUTHORITY , TABLE_NAME, URI_ALL_ITEMS_CODE);
-    // to access a particular row of the table
-        uriMatcher.addURI(AUTHORITY , TABLE_NAME , URI_ONE_ITEM_CODE);
+
+        // to access a particular row of the table
+        uriMatcher.addURI(AUTHORITY , TABLE_NAME + "/*", URI_ONE_ITEM_CODE);
     }
+
     private CheckBoxedItemDao checkBoxedItemDao;
 
     private static final Executor executor = Executors.newSingleThreadExecutor();
@@ -92,21 +92,36 @@ public class CheckBoxedItemContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        int fruitId = Integer.parseInt(uri.getLastPathSegment());
-        int fruitValid = values.getAsInteger("fruit_valid");
-
-        // Kiểm tra nếu fruitValid đã được cập nhật từ 1 xuống 0, không thực hiện cập nhật lại
-        if (fruitValid == 0) {
-            values.put("fruit_valid", fruitValid);
-            int finalFruitValid = fruitValid;
-            executor.execute(() -> {
-                checkBoxedItemDao.updateFruitValid(fruitId, finalFruitValid);
-                checkBoxedItemDao.insert(new CheckBoxedItem(fruitId, finalFruitValid));
-                Log.d("CheckBoxedItemProvider", "Updated fruitValid " + fruitValid + " for fruitId: " + fruitId);
-            });
-        } else {
-            Log.d("CheckBoxedItemProvider", "Updated fruitValid" + fruitValid + "for fruitId: " + fruitId);
+        Log.d("TAG", "update");
+        int rowsUpdated = 0;
+        switch (uriMatcher.match(uri)){
+            case URI_ONE_ITEM_CODE:
+                if (getContext() != null) {
+                    String fruitId = uri.getLastPathSegment(); // Lấy ra fruitId từ URI
+                    if (values != null && values.containsKey(COLUMN_FRUIT_VALID)) {
+                        int fruitValid = values.getAsInteger(COLUMN_FRUIT_VALID);
+                        rowsUpdated = checkBoxedItemDao.updateFruitValid(Integer.parseInt(fruitId), fruitValid);
+                        if (rowsUpdated != 0) {
+                            getContext().getContentResolver().notifyChange(uri, null);
+                        }
+                    }
+                    return rowsUpdated;
+                }
+                throw new IllegalArgumentException("Invalid URI: cannot update");
+            case URI_ALL_ITEMS_CODE:
+                if (selection != null && selection.equals("fruit_id=?") && selectionArgs != null && selectionArgs.length > 0) {
+                    String fruitId = selectionArgs[0];
+                    rowsUpdated = checkBoxedItemDao.updateFruitValid(Integer.parseInt(fruitId), values.getAsInteger(COLUMN_FRUIT_VALID));
+                    Log.d("checkcp","fruit_id: "+fruitId+", fruit_valid: "+values.getAsInteger(COLUMN_FRUIT_VALID));
+                    if (rowsUpdated != 0) {
+                        getContext().getContentResolver().notifyChange(uri, null);
+                    }
+                    return rowsUpdated;
+                } else {
+                    throw new IllegalArgumentException("Invalid URI: cannot update");
+                }
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        return 1;
     }
 }

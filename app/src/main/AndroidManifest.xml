@@ -26,7 +26,7 @@
         <!-- Khai báo provider mới -->
         <provider
             android:name=".provider.CheckBoxedItemContentProvider"
-            android:authorities="com.paci.training.android.truongnv92.mockprojectprovider"
+            android:authorities="com.paci.training.android.truongnv92.provider.mockprojectprovider"
             android:exported="true" />
     </application>
 
