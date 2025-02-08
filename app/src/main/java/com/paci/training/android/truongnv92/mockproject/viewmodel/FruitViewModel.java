@@ -25,11 +25,6 @@ import java.util.concurrent.ExecutorService;
 
 
 public class FruitViewModel extends ViewModel {
-    private static final String AUTHORITY = "com.paci.training.android.truongnv92.provider.mockprojectprovider";
-    private static final String TABLE_NAME = "check_boxed_items";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-    public static final String COLUMN_FRUIT_ID = "fruit_id";
-    public static final String COLUMN_FRUIT_VALID = "fruit_valid";
     private final FruitRepository fruitRepository;
     private MutableLiveData<List<Fruit>> fruitListLiveData;
     private Fruit currentSelectedFruit;
@@ -45,20 +40,6 @@ public class FruitViewModel extends ViewModel {
     public FruitViewModel(FruitRepository fruitRepository) {
         this.fruitRepository = fruitRepository;
         fruitListLiveData = new MutableLiveData<>();
-    }
-
-    public LiveData<List<Fruit>> getFruitListLiveData() {
-        return fruitListLiveData;
-    }
-
-    public List<Fruit> loadFruits() {
-        // Gọi phương thức getFruits() từ Repository để lấy danh sách trái cây
-        List<Fruit> fruitList = fruitRepository.getFruits();
-        // Cập nhật LiveData với danh sách trái cây mới
-        fruitListLiveData.setValue(fruitList);
-
-        return fruitList;
-
     }
 
     public List<Fruit> getRawFruits() {
